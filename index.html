@@ -11,10 +11,68 @@
 	<!--Let browser know website is optimized for mobile-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
-<body>
+<body class="container">
 	<h1>Wiley todo app</h1>
+	<!-- Main form -->
+	<form id="todoForm">
+		<div class="input-field">
+			<label for="itemTitle">What to do?</label>
+			<input type="text" id="itemTitle">
+		</div>
+		<div class="input-field">
+			<label for="itemDesc">Description</label>
+			<input type="text" id="itemDesc">
+		</div>
+		<button type="submit" id="submitBtn" class="btn-floating btn-large waves-effect waves-light red right"><i class="material-icons">add</i></button>
+	</form>
+
+	<!-- List of items -->
+	<ul id="itemsList">
+		<li>
+		  <label>
+		    <input type="checkbox" />
+		    <span>Buy milk</span>
+		    <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officiis, ab?</span>
+		  </label>
+		</li>
+	</ul>
 
 	<!-- Get Materialize JS via CDN -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.2/js/materialize.min.js"></script>
+
+	<script>
+		const itemTitle = document.querySelector('#itemTitle'),
+					itemDesc = document.querySelector('#itemDesc'),
+					todoForm = document.querySelector('#todoForm'),
+					itemsList = document.querySelector('#itemsList');
+
+		// todoForm.addEventListener('submit', (e) => {
+		// 	e.preventDefault();
+		// 	if (itemTitle.value !== '') {
+		// 		console.log(itemTitle.value);
+		// 	} else {
+		// 		console.log('Error');
+		// 	}
+		// });
+		todoForm.addEventListener('submit', setNewItem);
+
+		function setNewItem(e) {
+			e.preventDefault();
+
+			let title = itemTitle.value,
+					desc = itemDesc.value,
+					item = document.createElement('li');
+
+			item.innerHTML = `
+				<label>
+					<input type="checkbox" />
+					<span>${title}</span>
+					<span>${desc}</span>
+				</label>
+			`;
+
+			itemsList.appendChild(item);
+		}
+	</script>
 </body>
 </html>
