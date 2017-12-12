@@ -10,69 +10,154 @@
 
 	<!--Let browser know website is optimized for mobile-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <style>
+  	/* Helper classes */
+  	.cursor-pointer:hover {
+  		cursor: pointer;
+  	}
+
+		/* Items list */
+		.items-list__item {
+  		position: relative;		
+		}
+
+  	.items-list__item:hover .items-list__icon {
+  		display: inline-block;
+  	}
+
+  	.items-list__icon {
+  		position: absolute;
+  		display: none;
+  	}
+
+  	.items-list__icon:hover {
+  		cursor: pointer;
+  		color: black;
+  	}
+
+  	.items-list__icon_delete {
+			right: 5rem;
+  	}
+
+  	.items-list__icon_edit {
+  		right: 7rem;
+  	}
+  </style>
 </head>
 <body class="container">
 	<h1>Wiley todo app</h1>
-	<!-- Main form -->
-	<form id="todoForm">
-		<div class="input-field">
-			<label for="itemTitle">What to do?</label>
-			<input type="text" id="itemTitle">
-		</div>
-		<div class="input-field">
-			<label for="itemDesc">Description</label>
-			<input type="text" id="itemDesc">
-		</div>
-		<button type="submit" id="submitBtn" class="btn-floating btn-large waves-effect waves-light red right"><i class="material-icons">add</i></button>
-	</form>
+	<div class="row">
+		<!-- Main form -->
+		<form id="todoForm">
+			<div class="input-field">
+				<label for="itemTitle">What to do?</label>
+				<input type="text" id="itemTitle" name="itemTitle">
+			</div>
+			<div class="input-field">
+				<label for="itemDesc">Description</label>
+				<input type="text" id="itemDesc" name="itemDesc">
+			</div>
+			<button type="submit" id="submitBtn" class="btn-floating btn-large waves-effect waves-light red right"><i class="material-icons">add</i></button>
+		</form>
+	</div><!-- .row -->
 
-	<!-- List of items -->
-	<ul id="itemsList">
-		<li>
-		  <label>
-		    <input type="checkbox" />
-		    <span>Buy milk</span>
-		    <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officiis, ab?</span>
-		  </label>
-		</li>
-	</ul>
+	<div class="row">
+		<!-- List of items -->
+		<ul id="itemsList" class="items-list">
+			<li>
+			  <label class="items-list__label cursor-pointer">
+			    <input type="checkbox" />
+			    <span>Buy milk</span>
+			    <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officiis, ab?</span>
+					<i class="material-icons items-list__icon items-list__icon_delete">delete</i>
+					<i class="material-icons items-list__icon items-list__icon_edit">edit</i>
+			  </label>
+			</li>
+		</ul>
+	</div><!-- .row -->
 
 	<!-- Get Materialize JS via CDN -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.2/js/materialize.min.js"></script>
 
 	<script>
-		const itemTitle = document.querySelector('#itemTitle'),
-					itemDesc = document.querySelector('#itemDesc'),
+		const 
+					// itemTitle = document.querySelector('#itemTitle'),
+					// itemDesc = document.querySelector('#itemDesc'),
 					todoForm = document.querySelector('#todoForm'),
-					itemsList = document.querySelector('#itemsList');
+					itemsList = document.querySelector('#itemsList'),
+					items = JSON.parse(localStorage.getItem('items')) || [];
 
-		// todoForm.addEventListener('submit', (e) => {
-		// 	e.preventDefault();
-		// 	if (itemTitle.value !== '') {
-		// 		console.log(itemTitle.value);
-		// 	} else {
-		// 		console.log('Error');
-		// 	}
-		// });
-		todoForm.addEventListener('submit', setNewItem);
+		// Listen to submit
+		todoForm.addEventListener('submit', setItem);
 
-		function setNewItem(e) {
+		// Listen to delete or edit list
+		itemsList.addEventListener('click', operateItem);
+
+		// Create new item and append it to list
+		function setItem(e) {
 			e.preventDefault();
 
-			let title = itemTitle.value,
-					desc = itemDesc.value,
-					item = document.createElement('li');
+			const title = this.querySelector('[name=itemTitle]').value,
+						desc = this.querySelector('[name=itemDesc]').value;
 
-			item.innerHTML = `
-				<label>
-					<input type="checkbox" />
-					<span>${title}</span>
-					<span>${desc}</span>
-				</label>
-			`;
+			const item = {
+				title,
+				desc,
+				done: false
+			};
 
-			itemsList.appendChild(item);
+			// Push item to items array
+			items.push(item);
+
+			// Add item to items list
+			appendItem(items, itemsList);
+
+			// Save items to local storage
+			localStorage.setItem('items', JSON.stringify(items));
+
+			// Reset form inputs
+			this.reset();
 		}
+
+		// Adding items to items list
+		function appendItem(items = [], itemsList) {
+			itemsList.innerHTML = items.map((item, i) => {
+				return `
+				<li class="items-list__item">
+			 		<label class="items-list__label cursor-pointer">
+			 			<input type="checkbox" data-index="${i}" id="item-${i}" ${item.done ? "checked" : ""} />
+			 			<span>${item.title}</span>
+			 			<span>${item.desc}</span>
+			 		</label>
+			 			<i class="material-icons items-list__icon items-list__icon_delete">delete</i>
+			 			<i class="material-icons items-list__icon items-list__icon_edit">edit</i>
+				</li>
+		 	`;
+			}).join('');
+		}
+
+		// Delete or edit item
+		function operateItem(e) {
+			const el = e.target,
+						deleteItem = el.querySelector('i.items-list__icon_delete'),
+						editItem = el.querySelector('i.items-list__icon_edit');
+
+			// If clicked delete icon then delete current item,
+			// if clicked edit then edit
+			// else do nothing
+			if (e.target.matches('.items-list__icon_delete')) {
+				itemsList.removeChild(e.target.parentElement);
+			} else if (e.target.matches('.items-list__icon_edit')) {
+				console.log('ok');
+				
+			} else {
+				return;
+			}
+		}
+
+		// Items list init
+		appendItem(items, itemsList);
 	</script>
 </body>
 </html>
