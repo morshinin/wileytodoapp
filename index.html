@@ -76,6 +76,9 @@
 			</li>
 		</ul>
 	</div><!-- .row -->
+	<div class="row">
+		<a class="waves-effect waves-light btn" id="deleteAll"><i class="material-icons left">delete</i>Delete all</a>
+	</div>
 
 	<!-- Get Materialize JS via CDN -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.2/js/materialize.min.js"></script>
@@ -83,16 +86,19 @@
 	<script>
 		const 
 					// itemTitle = document.querySelector('#itemTitle'),
-					// itemDesc = document.querySelector('#itemDesc'),
+					deleteAllBtn = document.querySelector('#deleteAll'),
 					todoForm = document.querySelector('#todoForm'),
-					itemsList = document.querySelector('#itemsList'),
-					items = JSON.parse(localStorage.getItem('items')) || [];
+					itemsList = document.querySelector('#itemsList');
+		let items = JSON.parse(localStorage.getItem('items')) || [];
 
 		// Listen to submit
 		todoForm.addEventListener('submit', setItem);
 
 		// Listen to delete or edit list
 		itemsList.addEventListener('click', operateItem);
+
+		// Listen to delete all button
+		deleteAllBtn.addEventListener('click', deleteAll);
 
 		// Create new item and append it to list
 		function setItem(e) {
@@ -127,7 +133,7 @@
 				<li class="items-list__item">
 			 		<label class="items-list__label cursor-pointer">
 			 			<input type="checkbox" data-index="${i}" id="item-${i}" ${item.done ? "checked" : ""} />
-			 			<span>${item.title}</span>
+			 			<span class="items-list__item-title">${item.title}</span>
 			 			<span>${item.desc}</span>
 			 		</label>
 			 			<i class="material-icons items-list__icon items-list__icon_delete">delete</i>
@@ -142,12 +148,15 @@
 			const el = e.target,
 						deleteItem = el.querySelector('i.items-list__icon_delete'),
 						editItem = el.querySelector('i.items-list__icon_edit');
+						// itemTitle = el.querySelector('.items-list__item-title').value;
 
 			// If clicked delete icon then delete current item,
 			// if clicked edit then edit
 			// else do nothing
 			if (e.target.matches('.items-list__icon_delete')) {
 				itemsList.removeChild(e.target.parentElement);
+				// localStorage.removeItem(itemTitle);
+				console.log(e.target.parentElement);
 			} else if (e.target.matches('.items-list__icon_edit')) {
 				console.log('ok');
 				
@@ -156,8 +165,30 @@
 			}
 		}
 
+		// Delete all items
+		function deleteAll(e) {
+			e.preventDefault();
+
+			while (itemsList.firstChild) {
+				itemsList.removeChild(itemsList.firstChild);
+			}
+
+			localStorage.clear();
+			items = [];
+		}
+
 		// Items list init
 		appendItem(items, itemsList);
+
+		// ToDo
+		// Remove item from localStorage when deleted
+		// Edit item
+		// Update localStorage when edit item
+		// Sort items
+		// Save checked items
+
+		// Done
+		// Add delete all button
 	</script>
 </body>
 </html>
