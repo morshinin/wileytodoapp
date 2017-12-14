@@ -1,3 +1,22 @@
+html {
+  background: #F09819;
+  background: -webkit-linear-gradient(to right, #EDDE5D, #F09819);
+  background: linear-gradient(to right, #EDDE5D, #F09819);
+}
+
+body {
+  background: white;
+  padding: 3rem;
+  box-shadow: 0 0 20px rgba(0,0,0,.3);
+}
+
+/* Container */
+@media only screen and (min-width: 993px) {
+  .container {
+    width: 40vw;
+  }
+}
+
 /* Helper classes */
 .cursor-pointer:hover {
 	cursor: pointer;
