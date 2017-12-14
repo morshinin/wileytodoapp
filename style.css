@@ -1,0 +1,51 @@
+/* Helper classes */
+.cursor-pointer:hover {
+	cursor: pointer;
+}
+
+/* Items list */
+.items-list__item {
+	position: relative;		
+}
+
+.items-list__item:hover .items-list__icon {
+	display: inline-block;
+}
+
+.items-list__item-title-edit {
+  position: absolute;
+  display: none;
+  top: -8px;
+  left: 35px;
+}
+
+.edit-mode .items-list__item-title-edit {
+  display: block;
+}
+
+.edit-mode .items-list__item-title,
+.edit-mode .items-list__item-desc {
+  display: none;
+}
+
+.items-list__icon {
+	position: absolute;
+	display: none;
+}
+
+.items-list__icon:hover {
+	cursor: pointer;
+	color: black;
+}
+
+.items-list__icon_delete {
+	right: 5rem;
+}
+
+.items-list__icon_edit {
+	right: 7rem;
+}
+
+select {
+  display: block;
+}
